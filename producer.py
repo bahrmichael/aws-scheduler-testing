@@ -17,7 +17,8 @@ def handle(event, context):
 
 def run(target, input_topic, amount):
     start = datetime.utcnow()
-    for i in range(0, amount):
+    amount += 1
+    for i in range(1, amount):
         delay = randrange(60 * 5)
         scheduled_time = (datetime.utcnow() + timedelta(seconds=delay)).isoformat()
         payload = {
@@ -32,9 +33,11 @@ def run(target, input_topic, amount):
             Message=json.dumps(payload)
         )
 
-        if (i + 1) % 10 == 0:
+        if i % 10 == 0:
             total_millis = (datetime.utcnow() - start).total_seconds() * 1000
-            print(f'total: {i+1}, {int(total_millis / (i+1))}ms per event')
+            per_event = int(total_millis / i)
+            seconds_remaining = int((amount - i) * per_event / 1000)
+            print(f'total: {i}, { per_event }ms per event, {seconds_remaining}s remaining')
 
 
 if __name__ == '__main__':
