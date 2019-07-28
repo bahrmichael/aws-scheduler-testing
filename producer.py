@@ -31,9 +31,9 @@ def run(target, input_topic, amount):
             Message=json.dumps(payload)
         )
 
-        if i % 10 == 0:
+        if (i + 1) % 10 == 0:
             total_millis = (datetime.utcnow() - start).total_seconds() * 1000
-            print(f'total: {i}, {int(total_millis / i)} per event')
+            print(f'total: {i+1}, {int(total_millis / (i+1))}ms per event')
 
 
 if __name__ == '__main__':
