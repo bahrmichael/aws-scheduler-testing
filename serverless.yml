@@ -1,0 +1,44 @@
+service: aws-scheduler-testing
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: { "Fn::Join": [":", ["arn:aws:dynamodb:${self:provider.region}", { "Ref": "AWS::AccountId" }, "table/aws-scheduler-testing" ] ]  }
+
+custom:
+  output_topic:
+    name:
+    arn: { "Fn::Join": [":", ["arn:aws:sns:${self:provider.region}", { "Ref": "AWS::AccountId" }, "table/scheduler-output-${self:provider.stage}" ] ]  }
+
+functions:
+  consumer:
+    handler: consumer.handle
+    events:
+      - sns:
+          arn:
+            Fn::Join:
+              - ':'
+              - - 'arn:aws:sns'
+                - Ref: 'AWS::Region'
+                - Ref: 'AWS::AccountId'
+                - "${self:custom.inbound.name}"
+          topicName: "${self:custom.inbound.name}"
+  producer:
+    handler: producer.handle
+    environment:
+      INPUT_TOPIC_ARN: 'arn:aws:sns:us-east-1:256608350746:scheduler-input-prod'
+      OUTPUT_TOPIC_ARN: { "Fn::Join": [":", ["arn:aws:sns:${self:provider.region}", { "Ref": "AWS::AccountId" }, "table/scheduler-output-${self:provider.stage}" ] ]  }
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  exclude:
+    - venv/**
+    - node_modules/**
