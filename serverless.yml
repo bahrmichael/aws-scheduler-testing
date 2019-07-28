@@ -15,7 +15,7 @@ provider:
 custom:
   output_topic:
     name:
-    arn: { "Fn::Join": [":", ["arn:aws:sns:${self:provider.region}", { "Ref": "AWS::AccountId" }, "table/scheduler-output-${self:provider.stage}" ] ]  }
+    arn: { "Fn::Join": [":", ["arn:aws:sns:${self:provider.region}", { "Ref": "AWS::AccountId" }, "table/scheduler-test-${self:provider.stage}" ] ]  }
 
 functions:
   consumer:
@@ -28,13 +28,13 @@ functions:
               - - 'arn:aws:sns'
                 - Ref: 'AWS::Region'
                 - Ref: 'AWS::AccountId'
-                - "${self:custom.inbound.name}"
-          topicName: "${self:custom.inbound.name}"
+                - "scheduler-test-${self:provider.stage}"
+          topicName: "scheduler-test-${self:provider.stage}"
   producer:
     handler: producer.handle
     environment:
       INPUT_TOPIC_ARN: 'arn:aws:sns:us-east-1:256608350746:scheduler-input-prod'
-      OUTPUT_TOPIC_ARN: { "Fn::Join": [":", ["arn:aws:sns:${self:provider.region}", { "Ref": "AWS::AccountId" }, "table/scheduler-output-${self:provider.stage}" ] ]  }
+      OUTPUT_TOPIC_ARN: { "Fn::Join": [":", ["arn:aws:sns:${self:provider.region}", { "Ref": "AWS::AccountId" }, "scheduler-test-${self:provider.stage}" ] ]  }
 
 plugins:
   - serverless-python-requirements

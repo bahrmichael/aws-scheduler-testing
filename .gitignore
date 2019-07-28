@@ -21,3 +21,4 @@ var/
 .serverless
 .idea
 venv
+package-lock.json
