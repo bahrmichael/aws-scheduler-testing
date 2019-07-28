@@ -10,6 +10,7 @@ provider:
       Action:
         - dynamodb:DescribeTable
         - dynamodb:PutItem
+        - dynamodb:BatchWriteItem
       Resource: { "Fn::Join": [":", ["arn:aws:dynamodb:${self:provider.region}", { "Ref": "AWS::AccountId" }, "table/aws-scheduler-testing" ] ]  }
 
 custom:
