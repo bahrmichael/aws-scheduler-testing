@@ -23,7 +23,8 @@ def run(target, input_topic, amount):
         payload = {
             'payload': scheduled_time,
             'date': scheduled_time,
-            'target': target
+            'target': target,
+            'user': 'test-user'
         }
 
         client.publish(
