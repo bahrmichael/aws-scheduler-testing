@@ -17,6 +17,9 @@ custom:
   output_topic:
     name:
     arn: { "Fn::Join": [":", ["arn:aws:sns:${self:provider.region}", { "Ref": "AWS::AccountId" }, "table/scheduler-test-${self:provider.stage}" ] ]  }
+  pythonRequirements:
+    pythonBin: python3
+
 
 functions:
   consumer:
